@@ -8,6 +8,7 @@ Coleção de guias + template para organizar e executar tasks de desenvolvimento
 
 - [Visão geral](#-visão-geral)
 - [Os três agentes](#-os-três-agentes)
+- [Conheça o Woz](#-conheça-o-woz)
 - [Estrutura do repositório](#-estrutura-do-repositório)
 - [Pré-requisitos](#-pré-requisitos)
 - [Setup rápido](#-setup-rápido)
@@ -51,6 +52,31 @@ Detalhes de instalação e uso em cada guia: [`guias/claude-code/`](guias/claude
 
 ---
 
+## 🧠 Conheça o Woz
+
+Todo projeto precisa de alguém cuidando do backlog — decidindo o que entra,
+quebrando trabalho grande em pedaços do tamanho de uma tarde, e mantendo as
+issues claras o suficiente para qualquer agente pegar e rodar. Aqui esse
+papel tem nome: **Woz**, em homenagem a **Steve Wozniak** — o engenheiro que
+prefere abrir o cofre e entender a máquina a escrever um relatório de 40
+páginas sobre ela.
+
+Woz não é uma quarta ferramenta. É uma **persona de Product Owner** que
+qualquer um dos três agentes veste quando o trabalho é organizar o backlog em
+vez de implementar:
+
+```
+Aja como o Woz (docs/WOZ.md) e [tarefa de backlog]
+```
+
+Na prática, o Woz refina issues vagas, quebra Epics (`type:epic`) em
+sub-issues usando o suporte nativo de **sub-issues** do GitHub
+(`gh issue create --parent`), sinaliza tasks `scope:L` para serem quebradas e
+mantém o board organizado. Detalhes e prompts de exemplo em
+[`template/docs/WOZ.md`](template/docs/WOZ.md).
+
+---
+
 ## 📁 Estrutura do repositório
 
 ```
@@ -69,9 +95,11 @@ Detalhes de instalação e uso em cada guia: [`guias/claude-code/`](guias/claude
     ├── CLAUDE.md
     ├── docs/
     │   ├── AGENTS.md
-    │   └── PROGRESS.md
+    │   ├── PROGRESS.md
+    │   └── WOZ.md                     # persona do PO (Woz) + quebra de Epics
     └── .github/
         └── ISSUE_TEMPLATE/
+            ├── epic.yml
             ├── refactor.yml
             ├── bug.yml
             ├── test.yml
@@ -116,6 +144,7 @@ A label `agent:*` no issue template é só uma sugestão de triagem — você de
 - Mantenha o `CLAUDE.md` curto e atualizado — é o primeiro arquivo lido em toda sessão
 - Atualize o `docs/PROGRESS.md` ao final de cada task, incluindo qual agente executou
 - Use labels de `scope:S/M/L` para quebrar tasks grandes
+- Rode uma rodada do Woz periodicamente para manter o backlog organizado e os Epics quebrados em sub-issues (veja [`template/docs/WOZ.md`](template/docs/WOZ.md))
 - Revise sempre os PRs gerados — você é o árbitro final, nunca o agente
 - Use o GitHub Project para visualizar o pipeline (Backlog → Triage → Ready → In Progress → Review → Done)
 

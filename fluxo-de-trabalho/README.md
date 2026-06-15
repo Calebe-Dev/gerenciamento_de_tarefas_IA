@@ -18,6 +18,12 @@ Como organizar e executar tasks usando um **GitHub Project** (board) como fonte 
   gh auth refresh -s project
   ```
 
+- **`gh` >= 2.94.0** se for usar sub-issues nativas (Epics quebrados pelo Woz — veja [`template/docs/WOZ.md`](../template/docs/WOZ.md)):
+
+  ```bash
+  gh --version   # se for menor, atualize: brew upgrade gh (macOS) ou cli.github.com
+  ```
+
 - Pelo menos um agente configurado — veja [`guias/`](../guias)
 
 ---
@@ -33,13 +39,14 @@ Em **Settings → General**, ative:
 
 ### Issue templates
 
-Copie [`template/.github/ISSUE_TEMPLATE/`](../template/.github/ISSUE_TEMPLATE) para `.github/ISSUE_TEMPLATE/` no seu projeto. Define 4 tipos de task (Refactor, Bug, Test, Feature), cada um forçando o mínimo de informação necessária — incluindo um campo "Agente sugerido".
+Copie [`template/.github/ISSUE_TEMPLATE/`](../template/.github/ISSUE_TEMPLATE) para `.github/ISSUE_TEMPLATE/` no seu projeto. Define 5 tipos de issue (Epic, Refactor, Bug, Test, Feature), cada um forçando o mínimo de informação necessária — incluindo um campo "Agente sugerido". O template **Epic** é o ponto de entrada para iniciativas grandes, que o Woz quebra em sub-issues (veja [`template/docs/WOZ.md`](../template/docs/WOZ.md)).
 
 ### Labels
 
 Crie tudo via `gh`, sem precisar abrir o navegador:
 
 ```bash
+gh label create "type:epic"     --color 1f2937 --description "Iniciativa grande, quebrada em sub-issues pelo Woz"
 gh label create "type:refactor" --color 0e8a16 --description "Refatoração"
 gh label create "type:bug"      --color d73a4a --description "Correção de bug"
 gh label create "type:test"     --color fbca04 --description "Adição de testes"
@@ -94,6 +101,13 @@ Copie e adapte para o seu projeto:
 
 ```
 ┌──────────────┐
+│ 0. Woz faz   │  (periódico) Refina issues vagas, quebra Epics em
+│   grooming   │  sub-issues, garante labels — veja template/docs/WOZ.md
+│  do backlog  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
 │ 1. Criar     │  gh issue create --template feature.yml
 │   Issue      │  (ou pela UI) → cai em "Backlog"
 └──────┬───────┘
@@ -142,6 +156,24 @@ gh issue view 42                                   # ver detalhes/critérios
 gh issue edit 42 --add-label "scope:M,agent:codex"
 gh issue comment 42 --body "Comentário..."
 ```
+
+### Epics e sub-issues
+
+Requer `gh` >= 2.94.0. É o trabalho que o Woz faz (veja [`template/docs/WOZ.md`](../template/docs/WOZ.md)) para quebrar um `type:epic` em tasks menores:
+
+```bash
+# criar uma issue já como sub-issue de um Epic
+gh issue create --title "..." --label "type:feature,scope:S" --parent 100
+
+# vincular uma issue existente como sub-issue do Epic #100
+gh issue edit 100 --add-sub-issue 123
+gh issue edit 123 --set-parent 100        # equivalente, a partir da sub-issue
+
+# desvincular
+gh issue edit 123 --remove-parent
+```
+
+O Epic ganha automaticamente uma barra de progresso (sub-issues concluídas / total) — sem precisar de checklist manual na descrição.
 
 ### Pull Requests
 

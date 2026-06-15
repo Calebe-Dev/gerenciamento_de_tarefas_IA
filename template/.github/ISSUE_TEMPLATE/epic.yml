@@ -1,0 +1,63 @@
+name: 🧭 Epic
+description: Iniciativa grande — o Woz quebra em sub-issues (tasks/subtasks)
+title: "[EPIC] "
+labels: ["type:epic", "needs-spec"]
+body:
+  - type: textarea
+    id: vision
+    attributes:
+      label: Visão / objetivo
+      description: O que queremos alcançar e por quê
+      placeholder: |
+        Ex. Permitir que usuários exportem relatórios em PDF, reduzindo
+        tickets de suporte pedindo os dados manualmente.
+    validations:
+      required: true
+
+  - type: textarea
+    id: success-criteria
+    attributes:
+      label: Critérios de sucesso
+      description: Como saber que este Epic está concluído
+      placeholder: |
+        - [ ] Usuário exporta qualquer relatório como PDF
+        - [ ] Geração leva menos de 5s para relatórios de até 100 páginas
+    validations:
+      required: true
+
+  - type: textarea
+    id: breakdown
+    attributes:
+      label: Quebra sugerida em tasks
+      description: |
+        Lista inicial de tasks/sub-issues. O Woz (docs/WOZ.md) usa essa lista
+        para criar sub-issues com `gh issue create --parent`.
+      placeholder: |
+        - [ ] Endpoint de geração de PDF (type:feature, scope:M)
+        - [ ] Botão de exportar na UI (type:feature, scope:S, agent:antigravity)
+        - [ ] Testes E2E do fluxo de exportação (type:test, scope:S)
+    validations:
+      required: false
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Fora de escopo
+      description: O que este Epic explicitamente NÃO cobre — evita scope creep
+      placeholder: |
+        - Exportação em CSV/XLSX — Epic separado
+    validations:
+      required: false
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agente sugerido para o grooming
+      description: Quem deve "vestir o Woz" e quebrar este Epic primeiro?
+      options:
+        - Claude Code (raciocínio / quebra complexa)
+        - Codex (quebra padrão)
+        - Antigravity (quebra + distribuição paralela)
+        - Sem preferência
+    validations:
+      required: false

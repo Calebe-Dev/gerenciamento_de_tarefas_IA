@@ -44,6 +44,9 @@ gh issue list --label "type:feature"
 # comentar na issue (ex: pedir esclarecimento)
 gh issue comment <numero> --body "..."
 
+# criar uma sub-issue vinculada a um Epic (papel Woz — veja docs/WOZ.md)
+gh issue create --title "..." --label "type:feature" --parent <epic-numero>
+
 # abrir PR referenciando a issue
 gh pr create --title "feat: ..." --body "Closes #42" --base main
 
@@ -54,12 +57,21 @@ gh project item-edit --id <item-id> --field-id <field-id> --project-id <project-
 
 > Cheat-sheet completa de comandos `gh project` (incluindo como descobrir os IDs acima): veja [`fluxo-de-trabalho/README.md`](../fluxo-de-trabalho/README.md).
 
+## Papel especial: Woz (Product Owner)
+
+Para tasks de **backlog** — triagem, refinamento de issues, quebra de Epics
+em sub-issues — o agente deve adotar a persona descrita em
+[`docs/WOZ.md`](docs/WOZ.md). Não é um quarto agente: é um modo de trabalho
+que qualquer um dos três veste quando o pedido é sobre organizar o backlog,
+não implementar código.
+
 ## Antes de executar qualquer task
 
 1. Leia `docs/AGENTS.md` para entender a arquitetura
 2. Leia `docs/PROGRESS.md` para saber o estado atual
 3. Leia os critérios de aceite da Issue: `gh issue view <numero>`
-4. Se algo estiver ambíguo, **comente na Issue pedindo esclarecimento** (`gh issue comment`) ao invés de chutar
+4. Se a issue tiver um "Epic pai" (`#N`), leia também `gh issue view N` para entender o contexto maior
+5. Se algo estiver ambíguo, **comente na Issue pedindo esclarecimento** (`gh issue comment`) ao invés de chutar
 
 ## Ao concluir uma task
 

@@ -19,6 +19,7 @@ https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA
    - template/CLAUDE.md                    → ./CLAUDE.md
    - template/docs/AGENTS.md                → ./docs/AGENTS.md
    - template/docs/PROGRESS.md              → ./docs/PROGRESS.md
+   - template/docs/WOZ.md                   → ./docs/WOZ.md
    - template/.github/ISSUE_TEMPLATE/*.yml  → ./.github/ISSUE_TEMPLATE/
 
 3. Remova o clone temporário (/tmp/gerenciamento_de_tarefas_IA).
