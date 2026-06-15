@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>Organização de Projetos com IA — sem API Key</title>
+<meta name="description" content="Guias e template para organizar projetos com Claude Code, Codex e Antigravity rodando localmente via assinatura, sem API key. Conheça o Woz, o PO do seu backlog." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%238b5cf6'/%3E%3Ccircle cx='12' cy='4.5' r='1.4' fill='white'/%3E%3Crect x='11.2' y='5.5' width='1.6' height='2.5' fill='white'/%3E%3Crect x='5' y='8' width='14' height='11' rx='2.5' fill='white'/%3E%3Ccircle cx='9.3' cy='13.2' r='1.5' fill='%238b5cf6'/%3E%3Ccircle cx='14.7' cy='13.2' r='1.5' fill='%238b5cf6'/%3E%3Crect x='9' y='16.5' width='6' height='1.4' rx='0.7' fill='%238b5cf6'/%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-alt: #11151f;
+    --card: #161b27;
+    --border: #232a3b;
+    --text: #e6e8ef;
+    --muted: #93a0b8;
+    --primary: #8b5cf6;
+    --primary-2: #3b82f6;
+    --claude: #a78bfa;
+    --codex: #2dd4bf;
+    --antigravity: #60a5fa;
+    --woz: #f5a623;
+    --good: #22c55e;
+    --bad: #ef4444;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  a { color: var(--primary-2); }
+
+  code, pre {
+    font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Header / Nav ---------- */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(11, 14, 20, 0.78);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-links .nav-cta {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .nav-links .nav-cta:hover { color: #fff; opacity: 0.9; }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 88px 0 64px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% -10%, rgba(139, 92, 246, 0.25), transparent),
+      radial-gradient(ellipse 50% 40% at 80% 10%, rgba(59, 130, 246, 0.15), transparent);
+  }
+
+  .badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .badge {
+    font-size: 0.78rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--card);
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5.2vw, 3.4rem);
+    margin: 0 0 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .grad {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 1.15rem;
+    max-width: 680px;
+    margin: 0 auto 36px;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 13px 26px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.15s, opacity 0.15s, border-color 0.15s;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .btn:hover { transform: translateY(-2px); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff;
+  }
+
+  .btn-ghost {
+    border-color: var(--border);
+    color: var(--text);
+    background: var(--card);
+  }
+
+  .btn-ghost:hover { border-color: var(--primary-2); }
+
+  /* ---------- Sections ---------- */
+  .section { padding: 72px 0; }
+  .section.alt { background: var(--bg-alt); }
+
+  .section .kicker {
+    color: var(--primary-2);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 8px;
+  }
+
+  .section h2 {
+    font-size: 2rem;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .section .section-intro {
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 0 36px;
+    font-size: 1.02rem;
+  }
+
+  /* ---------- Grids & cards ---------- */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card h3 { margin-top: 0; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* ---------- Agent cards ---------- */
+  .agent-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .agent-card:hover { transform: translateY(-4px); }
+
+  .agent-card.claude { --accent: var(--claude); }
+  .agent-card.codex { --accent: var(--codex); }
+  .agent-card.antigravity { --accent: var(--antigravity); }
+
+  .agent-card h3 { margin: 0; color: var(--accent); font-size: 1.25rem; }
+
+  .agent-meta {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .agent-meta b { color: var(--text); font-weight: 600; }
+
+  .agent-card .desc { font-size: 0.92rem; color: var(--muted); margin: 0; }
+  .agent-card .desc b { color: var(--text); }
+
+  .agent-card .more {
+    margin-top: auto;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* ---------- Code boxes ---------- */
+  .code-box {
+    position: relative;
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-box pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    color: #d1d9e6;
+    line-height: 1.7;
+  }
+
+  .code-box.small pre {
+    padding: 14px 16px;
+    font-size: 0.8rem;
+  }
+
+  .code-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #11151f;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .copy-btn:hover { border-color: var(--primary-2); color: var(--primary-2); }
+  .copy-btn.copied { border-color: var(--good); color: var(--good); }
+
+  /* ---------- File tree ---------- */
+  .tree {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    color: #d1d9e6;
+    line-height: 1.7;
+  }
+
+  .tree .dir { color: var(--primary-2); font-weight: 600; }
+  .tree .comment { color: var(--muted); }
+
+  /* ---------- Woz section ---------- */
+  .quote {
+    border-left: 3px solid var(--woz);
+    padding: 18px 24px;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--text);
+    background: rgba(245, 166, 35, 0.08);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 24px 0;
+  }
+
+  .quote cite {
+    display: block;
+    font-style: normal;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 800px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  .checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .checklist li::before {
+    content: "✓";
+    color: var(--woz);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Timeline (fluxo) ---------- */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step .num {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.05rem;
+  }
+
+  .step.woz .num { background: var(--woz); color: #1a1200; }
+  .step .num .icon { width: 22px; height: 22px; }
+
+  .step h4 { margin: 4px 0; font-size: 1.05rem; }
+  .step p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+  .step code {
+    background: #0d1117;
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Boas práticas ---------- */
+  .card.good { border-left: 3px solid var(--good); }
+  .card.bad { border-left: 3px solid var(--bad); }
+
+  .card ul {
+    padding-left: 20px;
+    margin: 8px 0 0;
+    color: var(--muted);
+  }
+
+  .card ul li { margin-bottom: 10px; }
+  .card ul li:last-child { margin-bottom: 0; }
+
+  /* ---------- Footer ---------- */
+  .site-footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .site-footer a { color: var(--text); }
+  .site-footer .links { margin-bottom: 12px; }
+  .site-footer .links a { margin: 0 10px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--good);
+    color: #062b14;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ---------- Responsive nav ---------- */
+  @media (max-width: 760px) {
+    .nav-links {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 20px 24px 28px;
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-130%);
+      transition: transform 0.25s ease;
+    }
+
+    .nav-links.open { transform: translateY(0); }
+    .nav-toggle { display: block; }
+    .nav-links .nav-cta { align-self: flex-start; }
+  }
+</style>
+</head>
+<body>
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="icon-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 8V4H8"/>
+        <rect width="16" height="12" x="4" y="8" rx="2"/>
+        <path d="M2 14h2"/>
+        <path d="M20 14h2"/>
+        <path d="M15 13v2"/>
+        <path d="M9 13v2"/>
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12h16"/>
+        <path d="M4 6h16"/>
+        <path d="M4 18h16"/>
+      </symbol>
+      <symbol id="icon-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="8" height="4" x="8" y="2" rx="1"/>
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+      </symbol>
+      <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/>
+      </symbol>
+      <symbol id="icon-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 21.7a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7Z"/>
+        <path d="M12 22V12"/>
+        <path d="M3.3 7 12 12l8.7-5"/>
+      </symbol>
+      <symbol id="icon-idea" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 14c.2-1.1.7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.4 1.5 2.5"/>
+        <path d="M9 18h6"/>
+        <path d="M10 22h4"/>
+      </symbol>
+      <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>
+      </symbol>
+      <symbol id="icon-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+        <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+        <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+        <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+      </symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <polygon points="12,2 14.35,8.76 21.51,8.91 15.80,13.24 17.88,20.09 12,16 6.12,20.09 8.20,13.24 2.49,8.91 9.65,8.76"/>
+      </symbol>
+      <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="m9 12 2 2 4-4"/>
+      </symbol>
+      <symbol id="icon-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="m15 9-6 6"/>
+        <path d="m9 9 6 6"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header">
+    <nav class="container nav">
+      <a class="logo" href="#top"><svg class="icon" aria-hidden="true"><use href="#icon-bot"></use></svg> Organização com IA</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#icon-menu"></use></svg></button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#visao">Visão geral</a></li>
+        <li><a href="#agentes">Agentes</a></li>
+        <li><a href="#woz">Woz</a></li>
+        <li><a href="#estrutura">Estrutura</a></li>
+        <li><a href="#fluxo">Fluxo</a></li>
+        <li><a href="#instalacao" class="nav-cta">Instalar</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="container">
+        <div class="badges">
+          <span class="badge">Claude Code</span>
+          <span class="badge">Codex CLI</span>
+          <span class="badge">Antigravity</span>
+          <span class="badge">Woz · Product Owner</span>
+          <span class="badge">Sem API Key</span>
+        </div>
+        <h1>Organize projetos com <span class="grad">IA</span>,<br/>sem pagar por token</h1>
+        <p class="lead">
+          Guias + template para rodar <b>Claude Code</b>, <b>Codex</b> e <b>Antigravity</b>
+          localmente — via assinatura, sem <code>ANTHROPIC_API_KEY</code> nem
+          <code>OPENAI_API_KEY</code> — organizando seu backlog num GitHub Project,
+          com o <b>Woz</b> cuidando da organização das tasks.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#instalacao"><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg> Pegar o prompt de instalação</a>
+          <a class="btn btn-ghost" href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA" target="_blank" rel="noopener">Ver no GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISÃO GERAL -->
+    <section id="visao" class="section">
+      <div class="container">
+        <p class="kicker">Visão geral</p>
+        <h2>Dois usos, um repositório</h2>
+        <p class="section-intro">
+          Esse projeto serve tanto para aprender o fluxo quanto para aplicá-lo direto no seu código.
+        </p>
+        <div class="grid-2">
+          <div class="card">
+            <h3><svg class="icon" aria-hidden="true"><use href="#icon-book-open"></use></svg> Base de conhecimento</h3>
+            <p>
+              Guias passo a passo de como instalar, autenticar (sem API key) e usar
+              cada agente no dia a dia — Claude Code, Codex e Antigravity.
+            </p>
+          </div>
+          <div class="card">
+            <h3><svg class="icon" aria-hidden="true"><use href="#icon-package"></use></svg> Template reutilizável</h3>
+            <p>
+              Issue templates, <code>CLAUDE.md</code>, mapa de arquitetura e memória
+              persistente entre sessões (<code>PROGRESS.md</code>) — copie para
+              qualquer projeto com um único prompt.
+            </p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+          <h3>O fluxo, resumido</h3>
+          <ul style="color: var(--muted); padding-left: 20px; margin-bottom: 0;">
+            <li>Backlog organizado num <b style="color: var(--text);">GitHub Project</b> (board)</li>
+            <li>Issues padronizadas: <code>Epic</code>, <code>Refactor</code>, <code>Bug</code>, <code>Test</code>, <code>Feature</code></li>
+            <li>Você abre, <b style="color: var(--text);">localmente</b>, o agente mais adequado para a task</li>
+            <li>O agente lê <code>CLAUDE.md</code> + <code>docs/AGENTS.md</code> + <code>docs/PROGRESS.md</code>, implementa, testa e abre PR</li>
+            <li>Você revisa e dá merge — <b style="color: var(--text);">nunca o agente</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- OS TRÊS AGENTES -->
+    <section id="agentes" class="section alt">
+      <div class="container">
+        <p class="kicker">Escolha sua ferramenta</p>
+        <h2>Os três agentes</h2>
+        <p class="section-intro">
+          Três formas de rodar IA localmente, todas dentro de uma assinatura que você
+          já paga (ou de um preview gratuito) — zero custo por token, zero secrets para gerenciar.
+        </p>
+
+        <div class="grid-3">
+          <article class="agent-card claude">
+            <h3>Claude Code</h3>
+            <ul class="agent-meta">
+              <li><b>Empresa:</b> Anthropic</li>
+              <li><b>Modelo:</b> Claude Sonnet/Opus 4.6</li>
+              <li><b>Plano:</b> Claude Pro / Max</li>
+            </ul>
+            <div class="code-box small">
+              <div class="code-box-header">
+                <span>instalar e logar</span>
+                <button class="copy-btn" data-copy="cmd-claude">Copiar</button>
+              </div>
+              <pre><code id="cmd-claude">claude
+/login</code></pre>
+            </div>
+            <p class="desc"><b>Ponto forte:</b> raciocínio profundo e review crítico.</p>
+            <p class="desc"><b>Use para:</b> bugs difíceis, refactors críticos e revisão de PRs — inclusive os abertos por outros agentes.</p>
+            <a class="more" style="color: var(--claude);" href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/tree/main/guias/claude-code" target="_blank" rel="noopener">Ver guia completo →</a>
+          </article>
+
+          <article class="agent-card codex">
+            <h3>Codex CLI</h3>
+            <ul class="agent-meta">
+              <li><b>Empresa:</b> OpenAI</li>
+              <li><b>Modelo:</b> GPT (via ChatGPT)</li>
+              <li><b>Plano:</b> ChatGPT Plus/Pro/Business/Edu/Enterprise</li>
+            </ul>
+            <div class="code-box small">
+              <div class="code-box-header">
+                <span>instalar e logar</span>
+                <button class="copy-btn" data-copy="cmd-codex">Copiar</button>
+              </div>
+              <pre><code id="cmd-codex">npm install -g @openai/codex
+codex login</code></pre>
+            </div>
+            <p class="desc"><b>Ponto forte:</b> implementação padrão a partir de specs claras.</p>
+            <p class="desc"><b>Use para:</b> features e bugs com critérios de aceite bem definidos.</p>
+            <a class="more" style="color: var(--codex);" href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/tree/main/guias/codex" target="_blank" rel="noopener">Ver guia completo →</a>
+          </article>
+
+          <article class="agent-card antigravity">
+            <h3>Antigravity</h3>
+            <ul class="agent-meta">
+              <li><b>Empresa:</b> Google</li>
+              <li><b>Modelo:</b> Gemini 3 Pro/Flash, Claude Sonnet/Opus 4.6, GPT-OSS-120B</li>
+              <li><b>Plano:</b> Conta Google (preview gratuito)</li>
+            </ul>
+            <div class="code-box small">
+              <div class="code-box-header">
+                <span>instalar e logar</span>
+                <button class="copy-btn" data-copy="cmd-antigravity">Copiar</button>
+              </div>
+              <pre><code id="cmd-antigravity">curl -fsSL https://antigravity.google/cli/install.sh | bash
+agy</code></pre>
+            </div>
+            <p class="desc"><b>Ponto forte:</b> múltiplos agentes em paralelo + verificação visual via browser embutido.</p>
+            <p class="desc"><b>Use para:</b> mudanças com UI, ou várias tasks pequenas em paralelo.</p>
+            <a class="more" style="color: var(--antigravity);" href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/tree/main/guias/antigravity" target="_blank" rel="noopener">Ver guia completo →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONHEÇA O WOZ -->
+    <section id="woz" class="section">
+      <div class="container">
+        <p class="kicker">A personalidade do projeto</p>
+        <h2><svg class="icon" aria-hidden="true"><use href="#icon-idea"></use></svg> Conheça o Woz</h2>
+        <p class="section-intro">
+          Todo projeto precisa de alguém cuidando do backlog — decidindo o que entra,
+          quebrando trabalho grande em pedaços do tamanho de uma tarde, e mantendo as
+          issues claras o suficiente para qualquer agente pegar e rodar. Aqui esse papel
+          tem nome: <b style="color: var(--text);">Woz</b>, em homenagem a
+          <b style="color: var(--text);">Steve Wozniak</b> — o engenheiro que prefere
+          abrir o cofre e entender a máquina a escrever um relatório de 40 páginas sobre ela.
+        </p>
+
+        <div class="two-col">
+          <div>
+            <blockquote class="quote">
+              "Faça simples. Se não cabe numa tarde, quebre até caber."
+              <cite>— como o Woz pensa</cite>
+            </blockquote>
+
+            <p style="color: var(--muted);">
+              Woz <b style="color: var(--text);">não é uma quarta ferramenta</b>. É uma
+              persona de Product Owner que qualquer um dos três agentes veste quando o
+              trabalho é organizar o backlog em vez de implementar:
+            </p>
+
+            <div class="code-box small">
+              <div class="code-box-header">
+                <span>prompt do Woz</span>
+                <button class="copy-btn" data-copy="woz-prompt">Copiar</button>
+              </div>
+              <pre><code id="woz-prompt">Aja como o Woz (docs/WOZ.md) e [tarefa de backlog]</code></pre>
+            </div>
+
+            <p style="color: var(--muted);">
+              Na prática, ele quebra Epics (<code>type:epic</code>) em sub-issues usando
+              o suporte nativo de <b style="color: var(--text);">sub-issues</b> do GitHub
+              (<code>gh issue create --parent</code>).
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>O que o Woz faz</h3>
+            <ul class="checklist">
+              <li><span><b style="color: var(--text);">Triagem</b> — labels (<code>type:*</code>, <code>scope:*</code>, <code>agent:*</code>) e move issues para "Ready"</span></li>
+              <li><span><b style="color: var(--text);">Refinamento</b> — preenche lacunas em issues vagas usando os templates como checklist</span></li>
+              <li><span><b style="color: var(--text);">Quebra de Epics</b> — transforma <code>type:epic</code> em sub-issues menores</span></li>
+              <li><span><b style="color: var(--text);">Anti-bloat</b> — sinaliza <code>scope:L</code> e propõe quebrar em <code>S</code>/<code>M</code></span></li>
+              <li><span><b style="color: var(--text);">Higiene do board</b> — fecha duplicatas e linka dependências</span></li>
+            </ul>
+            <p style="margin-top: 16px; margin-bottom: 0;">
+              <a href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/blob/main/template/docs/WOZ.md" target="_blank" rel="noopener">Ler a persona completa (WOZ.md) →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESTRUTURA -->
+    <section id="estrutura" class="section alt">
+      <div class="container">
+        <p class="kicker">O que tem aqui dentro</p>
+        <h2><svg class="icon" aria-hidden="true"><use href="#icon-folder"></use></svg> Estrutura do repositório</h2>
+        <p class="section-intro">
+          Guias e fluxo de trabalho ficam na raiz; tudo dentro de <code>template/</code> é
+          o que será copiado para o seu projeto.
+        </p>
+        <pre class="tree"><code>.
+├── readme.md                          <span class="comment"># visão geral e índice</span>
+├── <span class="dir">instalacao/</span>
+│   └── README.md                      <span class="comment"># prompt único para aplicar o template num projeto</span>
+├── <span class="dir">guias/</span>
+│   ├── claude-code/README.md          <span class="comment"># instalação, login, comandos, prompts</span>
+│   ├── codex/README.md
+│   └── antigravity/README.md
+├── <span class="dir">fluxo-de-trabalho/</span>
+│   └── README.md                      <span class="comment"># setup do GitHub + fluxo passo a passo + cheat-sheet gh</span>
+└── <span class="dir">template/</span>                          <span class="comment"># copie/adapte para o seu projeto</span>
+    ├── CLAUDE.md
+    ├── <span class="dir">docs/</span>
+    │   ├── AGENTS.md
+    │   ├── PROGRESS.md
+    │   └── WOZ.md                     <span class="comment"># persona do PO (Woz) + quebra de Epics</span>
+    └── <span class="dir">.github/</span>
+        └── <span class="dir">ISSUE_TEMPLATE/</span>
+            ├── epic.yml
+            ├── refactor.yml
+            ├── bug.yml
+            ├── test.yml
+            └── feature.yml</code></pre>
+      </div>
+    </section>
+
+    <!-- INSTALAÇÃO -->
+    <section id="instalacao" class="section">
+      <div class="container">
+        <p class="kicker">A parte mais importante</p>
+        <h2><svg class="icon" aria-hidden="true"><use href="#icon-rocket"></use></svg> Instale em qualquer projeto</h2>
+        <p class="section-intro">
+          Copie o prompt abaixo e cole no Claude Code, Codex ou Antigravity,
+          <b style="color: var(--text);">na raiz do projeto que você quer organizar</b>.
+          O agente clona este repositório, copia os arquivos certos e preenche tudo sozinho.
+        </p>
+
+        <div class="code-box">
+          <div class="code-box-header">
+            <span>prompt de instalação</span>
+            <button class="copy-btn" data-copy="install-prompt"><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"></use></svg> Copiar prompt</button>
+          </div>
+          <pre><code id="install-prompt">Configure o sistema de organização de projetos com IA (Claude Code / Codex /
+Antigravity, sem API key) neste projeto, usando o template de:
+https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA
+
+1. Clone temporariamente o repositório de template:
+   git clone --depth 1 https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA.git /tmp/gerenciamento_de_tarefas_IA
+
+2. Copie para a raiz deste projeto (NÃO sobrescreva arquivos que já existam —
+   se houver conflito, me avise antes de continuar):
+   - template/CLAUDE.md                    → ./CLAUDE.md
+   - template/docs/AGENTS.md                → ./docs/AGENTS.md
+   - template/docs/PROGRESS.md              → ./docs/PROGRESS.md
+   - template/docs/WOZ.md                   → ./docs/WOZ.md
+   - template/.github/ISSUE_TEMPLATE/*.yml  → ./.github/ISSUE_TEMPLATE/
+
+3. Remova o clone temporário (/tmp/gerenciamento_de_tarefas_IA).
+
+4. Analise este projeto (package.json / pyproject.toml / etc., estrutura de
+   pastas, scripts de teste/lint/build) e preencha os placeholders entre
+   [colchetes] em ./CLAUDE.md e ./docs/AGENTS.md com as informações reais
+   deste projeto.
+
+5. Me mostre um resumo do que foi criado/preenchido e o que ainda precisa de
+   revisão manual.
+
+Não crie branch, não faça commit e não abra PR — apenas crie/edite os
+arquivos localmente para eu revisar.</code></pre>
+        </div>
+
+        <div class="grid-3" style="margin-top: 28px;">
+          <div class="card">
+            <h3>1. Revise</h3>
+            <p style="color: var(--muted); margin-bottom: 0;">
+              Confira <code>CLAUDE.md</code> e <code>docs/AGENTS.md</code> — o agente
+              preenche com base no que encontra no projeto, mas vale checar.
+            </p>
+          </div>
+          <div class="card">
+            <h3>2. Configure o GitHub</h3>
+            <p style="color: var(--muted); margin-bottom: 0;">
+              Project, labels e branch protection — siga o
+              <a href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/blob/main/fluxo-de-trabalho/README.md" target="_blank" rel="noopener">fluxo de trabalho</a>.
+            </p>
+          </div>
+          <div class="card">
+            <h3>3. Comece a usar</h3>
+            <p style="color: var(--muted); margin-bottom: 0;">
+              Crie uma issue com um dos templates e abra o agente seguindo o fluxo descrito abaixo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLUXO -->
+    <section id="fluxo" class="section alt">
+      <div class="container">
+        <p class="kicker">No dia a dia</p>
+        <h2>Fluxo do dia a dia</h2>
+        <p class="section-intro">
+          Do backlog ao merge — tudo via <code>gh</code> CLI, sem bots de CI e sem API key.
+        </p>
+
+        <div class="timeline">
+          <div class="step woz">
+            <div class="num"><svg class="icon" aria-hidden="true"><use href="#icon-idea"></use></svg></div>
+            <div>
+              <h4>0. Woz faz grooming <span style="color: var(--muted); font-weight: 400;">(periódico)</span></h4>
+              <p>Refina issues vagas, quebra Epics em sub-issues e garante que tudo tem <code>type:*</code> e <code>scope:*</code>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <h4>Criar issue</h4>
+              <p><code>gh issue create --template feature.yml</code> (ou pela UI) → cai em "Backlog"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <h4>Triage</h4>
+              <p>Você adiciona labels de <code>type</code>/<code>scope</code>/<code>agent</code> → item vai para "Ready"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <h4>Escolher agente</h4>
+              <p>Abra, na sua máquina, o agente indicado pela label <code>agent:*</code> (Claude Code, Codex ou Antigravity)</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <h4>Agente executa</h4>
+              <p>Lê <code>CLAUDE.md</code> + <code>docs/AGENTS.md</code> + <code>docs/PROGRESS.md</code>, implementa, testa e abre PR</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">5</div>
+            <div>
+              <h4>Review</h4>
+              <p>Você (ou outro agente) roda <code>gh pr diff</code> e revisa — item move para "Review"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="num">6</div>
+            <div>
+              <h4>Merge</h4>
+              <p><code>gh pr merge --squash --delete-branch</code> → issue fecha, item vai para "Done"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOAS PRÁTICAS -->
+    <section id="boas-praticas" class="section">
+      <div class="container">
+        <p class="kicker">Antes de começar</p>
+        <h2><svg class="icon" aria-hidden="true"><use href="#icon-star"></use></svg> Boas práticas</h2>
+        <div class="grid-2">
+          <div class="card good">
+            <h3><svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg> Faça</h3>
+            <ul>
+              <li>Mantenha o <code>CLAUDE.md</code> curto e atualizado</li>
+              <li>Atualize o <code>docs/PROGRESS.md</code> ao final de cada task, com o agente que executou</li>
+              <li>Use labels <code>scope:S/M/L</code> para quebrar tasks grandes</li>
+              <li>Rode uma rodada do Woz periodicamente para manter o backlog organizado</li>
+              <li>Revise sempre os PRs gerados — você é o árbitro final, nunca o agente</li>
+            </ul>
+          </div>
+          <div class="card bad">
+            <h3><svg class="icon" aria-hidden="true"><use href="#icon-x-circle"></use></svg> Evite</h3>
+            <ul>
+              <li>Issues vagas tipo "melhorar performance" — sempre especifique escopo</li>
+              <li>Misturar múltiplas mudanças numa issue só</li>
+              <li>Dar permissão de merge direto pro agente</li>
+              <li>Esquecer de atualizar o <code>docs/PROGRESS.md</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="links">
+        <a href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/blob/main/template/docs/WOZ.md" target="_blank" rel="noopener">Woz (PO)</a>
+        <a href="https://github.com/Calebe-Dev/gerenciamento_de_tarefas_IA/blob/main/fluxo-de-trabalho/README.md" target="_blank" rel="noopener">Fluxo de trabalho</a>
+      </div>
+      <p>Template livre — adapte ao seu projeto e remova o que não usar.</p>
+      <p>Feito com <svg class="icon" aria-hidden="true"><use href="#icon-bot"></use></svg> por humanos que decidiram delegar o tédio para máquinas — sem pagar por token.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Mobile nav toggle
+    var navToggle = document.getElementById('navToggle');
+    var navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', function () {
+      var isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    navLinks.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        navLinks.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Copy to clipboard with fallback
+    function copyWithExecCommand(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).catch(function () {
+          return copyWithExecCommand(text);
+        });
+      }
+      return copyWithExecCommand(text);
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    }
+
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      var original = btn.innerHTML;
+      btn.addEventListener('click', function () {
+        var targetId = btn.getAttribute('data-copy');
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        copyText(el.textContent.trim()).then(function () {
+          btn.innerHTML = '<svg class="icon" aria-hidden="true"><use href="#icon-check-circle"></use></svg> Copiado!';
+          btn.classList.add('copied');
+          showToast('Copiado para a área de transferência');
+          setTimeout(function () {
+            btn.innerHTML = original;
+            btn.classList.remove('copied');
+          }, 1800);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
