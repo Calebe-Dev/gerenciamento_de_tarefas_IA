@@ -1,0 +1,55 @@
+name: 🧪 Test
+description: Adicionar/melhorar testes
+title: "[TEST] "
+labels: ["type:test"]
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: Módulo/arquivo alvo
+      placeholder: src/services/lead.service.ts
+    validations:
+      required: true
+
+  - type: textarea
+    id: cases
+    attributes:
+      label: Casos a cobrir
+      placeholder: |
+        - Caminho feliz: criar lead com dados válidos
+        - Erro: dados inválidos → retorna 400
+        - Edge case: lead duplicado → retorna 409
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Tipo de teste
+      options:
+        - Unit
+        - Integration
+        - E2E
+    validations:
+      required: true
+
+  - type: input
+    id: coverage
+    attributes:
+      label: Cobertura mínima esperada
+      placeholder: "80%"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agente sugerido
+      description: Qual agente local parece mais adequado para essa task? (decisão pode mudar na triagem)
+      options:
+        - Claude Code (testes complexos / casos de borda)
+        - Codex (testes padrão)
+        - Antigravity (E2E com verificação visual no browser embutido)
+        - Sem preferência
+    validations:
+      required: false

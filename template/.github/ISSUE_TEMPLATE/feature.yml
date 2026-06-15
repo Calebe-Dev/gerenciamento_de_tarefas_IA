@@ -1,0 +1,56 @@
+name: ✨ Feature
+description: Nova funcionalidade
+title: "[FEATURE] "
+labels: ["type:feature", "needs-spec"]
+body:
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User story
+      placeholder: Como [tipo de usuário], quero [ação], para [benefício]
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite
+      placeholder: |
+        - [ ] Endpoint POST /leads cria um lead
+        - [ ] Retorna 201 com o lead criado
+        - [ ] Valida campos obrigatórios
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependências
+      placeholder: |
+        - Issue #42 (precisa estar concluída antes)
+        - Lib externa: nodemailer
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: Notas técnicas
+      placeholder: |
+        - Usar o padrão Repository já existente
+        - Reaproveitar UserValidator
+    validations:
+      required: false
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agente sugerido
+      description: Qual agente local parece mais adequado para essa task? (decisão pode mudar na triagem)
+      options:
+        - Claude Code (lógica de negócio / raciocínio)
+        - Codex (implementação padrão)
+        - Antigravity (feature com UI / múltiplas partes em paralelo)
+        - Sem preferência
+    validations:
+      required: false

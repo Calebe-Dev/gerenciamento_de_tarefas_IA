@@ -1,0 +1,61 @@
+name: 🐛 Bug
+description: Correção de bug
+title: "[BUG] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do bug
+      placeholder: O que está acontecendo?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1. Acesse...
+        2. Clique em...
+        3. Veja o erro
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento atual
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto técnico
+      placeholder: |
+        - Logs relevantes
+        - Stack trace
+        - Arquivos suspeitos
+    validations:
+      required: false
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agente sugerido
+      description: Qual agente local parece mais adequado para essa task? (decisão pode mudar na triagem)
+      options:
+        - Claude Code (raciocínio / bug crítico)
+        - Codex (implementação padrão)
+        - Antigravity (bug de UI / precisa verificação visual)
+        - Sem preferência
+    validations:
+      required: false

@@ -1,0 +1,70 @@
+name: 🔧 Refactor
+description: Refatoração de código existente
+title: "[REFACTOR] "
+labels: ["type:refactor", "needs-spec"]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivação
+      description: Por que essa refatoração é necessária?
+      placeholder: Ex. O módulo X está acoplado ao Y, dificultando testes...
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Escopo
+      description: Arquivos e módulos envolvidos
+      placeholder: |
+        - src/services/auth.service.ts
+        - src/controllers/auth.controller.ts
+    validations:
+      required: true
+
+  - type: textarea
+    id: dont-touch
+    attributes:
+      label: O que NÃO tocar
+      description: Crítico em microserviços em produção
+      placeholder: |
+        - Não alterar a API pública do AuthService
+        - Não modificar a tabela `users`
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite
+      placeholder: |
+        - [ ] Testes existentes continuam passando
+        - [ ] Cobertura mínima de 80%
+        - [ ] Sem mudanças na API pública
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Escopo estimado
+      options:
+        - S (≤2h)
+        - M (meio dia)
+        - L (+ de um dia — considere quebrar)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agente sugerido
+      description: Qual agente local parece mais adequado para essa task? (decisão pode mudar na triagem)
+      options:
+        - Claude Code (raciocínio / refactor crítico)
+        - Codex (implementação padrão)
+        - Antigravity (mudanças amplas em paralelo / verificação visual)
+        - Sem preferência
+    validations:
+      required: false
